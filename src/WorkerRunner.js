@@ -13,6 +13,8 @@ const WorkerRunner = (() =>
 
     const workerMessages = [];
 
+    let _onTaskComplete = null;
+
     const processWorkers = done =>
     {
         const availableThreads = threads - workersToProcess.size;
@@ -26,7 +28,8 @@ const WorkerRunner = (() =>
         {
             const worker = Array.from(workers).pop();
             //if no workers left, be gone
-            if(!worker){
+            if (!worker)
+            {
                 return;
             }
             workers.delete(worker);
@@ -37,11 +40,18 @@ const WorkerRunner = (() =>
             workerToRun.on('message', msg =>
             {
                 workerMessages.push(msg);
+                worker.message = msg;
             });
 
             workerToRun.on('exit', code =>
             {
                 workersToProcess.delete(workerToRun);
+
+                //signal back that task is complete
+                if (_onTaskComplete)
+                {
+                    _onTaskComplete(worker);
+                }
 
                 if (code !== 0)
                 {
@@ -61,11 +71,15 @@ const WorkerRunner = (() =>
 
         execute()
         {
+            _onTaskComplete = this.onTaskComplete;
+
             return new Promise(resolve =>
             {
                 processWorkers(data => resolve(data));
             });
-        }
+        },
+
+        onTaskComplete: null
     };
 })();
 
