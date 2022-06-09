@@ -1,0 +1,1 @@
+Just an example on how to use worker_threads in Node.js
