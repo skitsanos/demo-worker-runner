@@ -1,5 +1,5 @@
 const {
-    Worker, isMainThread, parentPort, workerData
+    isMainThread, parentPort, workerData
 } = require('worker_threads');
 
 const rnd = Math.ceil(Math.random() * 1000);
