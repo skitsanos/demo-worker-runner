@@ -11,7 +11,7 @@ const WorkerRunner = (() =>
     const workers = new Set();
     const workersToProcess = new Set();
 
-    const workerMessages = [];
+    let workerMessages = [];
 
     let _onTaskComplete = null;
 
@@ -76,6 +76,8 @@ const WorkerRunner = (() =>
             return new Promise(resolve =>
             {
                 processWorkers(data => resolve(data));
+
+                workerMessages = [];
             });
         },
 
